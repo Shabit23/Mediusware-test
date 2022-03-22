@@ -1,0 +1,169 @@
+{% extends 'backend/base.html' %}
+
+{% block title %} Product List {% endblock %}
+
+{% block content %}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Products</h1>
+</div>
+
+<div class="card">
+    <form action="{% url 'product:list.product' %}" method="POST" class="card-header">
+        {% csrf_token %}
+        <div class="form-row justify-content-between">
+            <div class="col-md-2">
+                <input type="text" name="title" placeholder="Product Title" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <select name="variant" id="" class="form-control">
+                    <option selected>---Select Variants---</option>
+                    <option style="font-weight: bolder;" disabled>Size</option>
+                    {% for size in sizes %}
+                    <option>{{ size }}</option>
+                    {% endfor %}
+                    <option style="font-weight: bolder;" disabled>Color</option>
+                    {% for color in colors %}
+                    <option>{{ color }}</option>
+                    {% endfor %}
+                    <option style="font-weight: bolder;" disabled>Style</option>
+                    {% for style in styles %}
+                    <option>{{ style }}</option>
+                    {% endfor %}
+
+
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Price Range</span>
+                    </div>
+                    <input type="text" name="price_from" aria-label="First name" placeholder="From"
+                        class="form-control">
+                    <input type="text" name="price_to" aria-label="Last name" placeholder="To" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="date" placeholder="Date" class="form-control">
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary float-right"><i class="fa fa-search"></i></button>
+            </div>
+        </div>
+    </form>
+    <!-- <h1>{{ products }}</h1>
+    <h1>{{ prices }}</h1> -->
+    <div class="card-body">
+        <div class="table-response">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Variant</th>
+                        <th width="150px">Action</th>
+                    </tr>
+                </thead>
+                {% for product in products_all %}
+                <tbody>
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ product.product }} <br> {{ product.created_at }}</td>
+                        <td>{{ product.product.description }}</td>
+                        <td>
+                            <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant">
+                                <dt class="col-sm-3 pb-0">
+                                    {{ product.product_variant_one }}
+                                </dt>
+                                <dd class="col-sm-9">
+                                    <dl class="row mb-0">
+                                        <dd class="col-sm-4 pb-0">{{ product.price }}</dd>
+                                        <dd class="col-sm-8 pb-0">{{ product.stock }}</dd>
+                                    </dl>
+                                </dd>
+                                <dt class="col-sm-3 pb-0">
+                                    {{ product.product_variant_two }}
+                                </dt>
+                                <dd class="col-sm-9">
+                                    <dl class="row mb-0">
+                                        <dd class="col-sm-4 pb-0">{{ product.price }}</dd>
+                                        <dd class="col-sm-8 pb-0">{{ product.stock }}</dd>
+                                    </dl>
+                                </dd>
+                                <dt class="col-sm-3 pb-0">
+                                    {{ product.product_variant_three }}
+                                </dt>
+                                <dd class="col-sm-9">
+                                    <dl class="row mb-0">
+                                        <dd class="col-sm-4 pb-0">{{ product.price }}</dd>
+                                        <dd class="col-sm-8 pb-0">{{ product.stock }}</dd>
+                                    </dl>
+                                </dd>
+                            </dl>
+                            <button onclick="$('#variant').toggleClass('h-auto')" class="btn btn-sm btn-link">Show more
+                            </button>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="" class="btn btn-success">Edit</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+
+
+    <div class="card-footer">
+        <!-- <div class="row justify-content-between"> -->
+        <div class="col-md-6">
+            <p>Showing 1 to 10 out of {{ product_list|length }}</p>
+        </div>
+        <div class="col-md-12">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                    {% if products_all.has_previous %}
+                    <li class="page-item">
+                        <a href="?page={{ products_all.previous_page_number }}" class="page-link">&laquo</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a href="#" class="page-link"> &laquo </a>
+                    </li>
+                    {% endif %}
+
+                    <!-- <li class="page-item">
+                          <a href="#" class="page-link"> Page {{ products.number }} of {{ products.paginator.num_pages }} </a>
+                        </li> -->
+
+                    {% for i in nums %}
+                    <li class="page-item">
+                        <a href="?page={{ forloop.counter }}" class="page-link">
+                            {{ forloop.counter }}
+                        </a>
+                    </li>
+                    {% endfor %}
+
+                    {% if products_all.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ products_all.next_page_number }}" class="page-link"> &raquo</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a href="#" class="page-link"> &raquo </a>
+                    </li>
+                    {% endif %}
+
+                </ul>
+            </nav>
+        </div>
+        <!-- </div> -->
+    </div>
+</div>
+{% endblock %}
